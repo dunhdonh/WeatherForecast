@@ -12,31 +12,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.weather_forecast.R;
-import com.example.weather_forecast.domains.hourly;
+import com.example.weather_forecast.domains.future;
 
 import java.util.ArrayList;
 
-public class hourlyAdapters extends RecyclerView.Adapter<hourlyAdapters.viewHolder>     {
-    ArrayList<hourly> items;
+public class futureAdapters extends RecyclerView.Adapter<futureAdapters.viewHolder>     {
+    ArrayList<future> items;
     Context context;
 
-    public hourlyAdapters(ArrayList<hourly> items) {
+    public futureAdapters(ArrayList<future> items) {
         this.items = items;
     }
 
     @NonNull
     @Override
-    public hourlyAdapters.viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_hourly, parent, false);
+    public futureAdapters.viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_future, parent, false);
         context = parent.getContext();
         return new viewHolder(inflate);
     }
-
     @Override
-    public void onBindViewHolder(@NonNull hourlyAdapters.viewHolder holder, int position) {
-        holder.hourTxt.setText(items.get(position).getHour());
-        holder.tempTxt.setText(items.get(position).getTemp() + "°");
-
+    public void onBindViewHolder(@NonNull futureAdapters.viewHolder holder, int position) {
+        holder.dayTxt.setText(items.get(position).getDay());
+        holder.statusTxt.setText(items.get(position).getStatus());
+        holder.lowTxt.setText(items.get(position).getLowTemp()+"°C");
+        holder.highTxt.setText(items.get(position).getHighTemp()+"°C");
         int drawableResourceId = holder.itemView.getResources()
                 .getIdentifier(items.get(position).getPicPath(), "drawable", holder.itemView.getContext().getPackageName());
 
@@ -49,13 +49,15 @@ public class hourlyAdapters extends RecyclerView.Adapter<hourlyAdapters.viewHold
     }
 
     public class viewHolder extends RecyclerView.ViewHolder{
-        TextView hourTxt, tempTxt;
+        TextView dayTxt, statusTxt, lowTxt, highTxt;
         ImageView pic;
         public viewHolder(@NonNull View itemView) {
             super(itemView);
 
-            hourTxt = itemView.findViewById(R.id.hourTxt);
-            tempTxt = itemView.findViewById(R.id.tempTxt);
+            dayTxt = itemView.findViewById(R.id.dayTxt);
+            statusTxt = itemView.findViewById(R.id.statusTxt);
+            lowTxt = itemView.findViewById(R.id.lowTxt);
+            highTxt = itemView.findViewById(R.id.highTxt);
             pic = itemView.findViewById(R.id.pic);
         }
     }

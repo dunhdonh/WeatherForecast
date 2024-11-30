@@ -22,10 +22,10 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Mostly Cloudy"
+                android:text="Hanoi"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textAlignment="center"
@@ -34,21 +34,23 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                tools:src="@drawable/cloudy_sunny" />
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/cloudy_sunny" />
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Mon Jun 17 | 10:00 AM"
-                android:textColor="@color/white"
-                android:textSize="19sp"
-                android:textAlignment="center"
                 android:layout_marginTop="8dp"
+                android:text="Mon Jun 17 | 10:00 AM"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:alpha="0.7"
+                android:textSize="15sp"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -68,10 +70,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="H:27  L:18"
-                android:textColor="@color/white"
-                android:textSize="16sp"
                 android:textAlignment="center"
-                />
+                android:textColor="@color/white"
+                android:alpha="0.7"
+                android:textSize="16sp" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -91,7 +93,7 @@
                         android:layout_width="34dp"
                         android:layout_height="34dp"
                         android:layout_gravity="center"
-                        tools:src="@drawable/rain" />
+                        android:src="@drawable/rain" />
 
                     <TextView
                         android:id="@+id/textView2_1"
@@ -100,7 +102,7 @@
                         android:text="22%"
                         android:textAlignment="center"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         tools:ignore="HardcodedText" />
 
@@ -111,7 +113,7 @@
                         android:text="Rain"
                         android:textAlignment="center"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
 
@@ -127,7 +129,7 @@
                         android:layout_width="34dp"
                         android:layout_height="34dp"
                         android:layout_gravity="center"
-                        tools:src="@drawable/wind" />
+                        android:src="@drawable/wind" />
 
                     <TextView
                         android:id="@+id/textView3_1"
@@ -136,7 +138,7 @@
                         android:text="12 km/h"
                         android:textAlignment="center"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         tools:ignore="HardcodedText" />
 
@@ -149,7 +151,7 @@
                         android:text="Wind speed"
                         android:textAlignment="center"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
 
@@ -165,7 +167,7 @@
                         android:layout_width="34dp"
                         android:layout_height="34dp"
                         android:layout_gravity="center"
-                        tools:src="@drawable/humidity" />
+                        android:src="@drawable/humidity" />
 
                     <TextView
                         android:id="@+id/textView4_1"
@@ -174,7 +176,7 @@
                         android:text="18%"
                         android:textAlignment="center"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         tools:ignore="HardcodedText" />
 
@@ -185,7 +187,7 @@
                         android:text="Humidity"
                         android:textAlignment="center"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
 
@@ -194,6 +196,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
                 android:orientation="horizontal" >
 
                     <TextView
@@ -209,7 +213,7 @@
                         tools:ignore="HardcodedText" />
 
                     <TextView
-                        android:id="@+id/textView5_2"
+                        android:id="@+id/nextBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Next 7 Day >"
