@@ -39,6 +39,8 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gson" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+org-osmdroid ="org.osmdroid:osmdroid-android:6.1.15"
+
 
 
 [plugins]
