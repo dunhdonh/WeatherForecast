@@ -31,7 +31,8 @@ public class FutureActivity extends AppCompatActivity {
 
     private void setVariable() {
         ConstraintLayout backBtn = findViewById(R.id.backBtn);
-        backBtn.setOnClickListener(v->startActivity(new Intent(FutureActivity.this, MainActivity.class)));
+        backBtn.setOnClickListener(v -> { onBackPressed();
+        });
     }
 
     private void initRecyclerView() {

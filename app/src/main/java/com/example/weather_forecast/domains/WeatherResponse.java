@@ -8,6 +8,13 @@ public class WeatherResponse {
     @SerializedName("weather")
     private List<Weather> weather;
 
+    @SerializedName("wind")
+    private Wind wind;
+
+    public Wind getWind(){
+        return wind;
+    }
+
     public Main getMain() {
         return main;
     }
@@ -23,6 +30,9 @@ public class WeatherResponse {
         @SerializedName("humidity")
         private int humidity;
 
+        @SerializedName("feels_like")
+        private float feels_like;
+
         public float getTemp() {
             return temp;
         }
@@ -30,14 +40,48 @@ public class WeatherResponse {
         public int getHumidity() {
             return humidity;
         }
+
+        public float getFeelsLike(){
+            return feels_like;
+        }
+        @SerializedName("rain")
+        private int rain;
+        public int getRain(){
+            return rain;
+        }
+
+
+
     }
 
     public static class Weather {
+        @SerializedName("main")
+        private String main;
+
+        public String getMain() {
+            return main;
+        }
+
         @SerializedName("description")
         private String description;
 
         public String getDescription() {
             return description;
         }
+    }
+
+    public static class Wind {
+        @SerializedName("speed")
+        private float speed;
+
+        public float getSpeed(){
+            return speed;
+        }
+    }
+    @SerializedName("pop")
+    private float pop;
+
+    public float getRainPercentage(){
+        return pop;
     }
 }
