@@ -1,0 +1,13 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="ring" android:useLevel="false">
+            <size android:width="40dp" android:height="40dp" />
+            <gradient
+                android:type="sweep"
+                android:useLevel="false"
+                android:startColor="#FFFFFFFF"
+                android:endColor="#00FFFFFF"
+                android:angle="360" />
+        </shape>
+    </item>
+</layer-list>

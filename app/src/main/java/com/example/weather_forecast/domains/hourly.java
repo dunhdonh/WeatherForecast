@@ -3,12 +3,12 @@ package com.example.weather_forecast.domains;
 public class hourly {
     private String hour;
     private int temp;
-    private String picPath;
+    private String iconURL;
 
-    public hourly(String hour, int temp, String picPath) {
+    public hourly(String hour, int temp, String iconURL) {
         this.hour = hour;
         this.temp = temp;
-        this.picPath = picPath;
+        this.iconURL = iconURL;
     }
 
     public String getHour() {
@@ -27,12 +27,12 @@ public class hourly {
         this.temp = temp;
     }
 
-    public String getPicPath() {
-        return picPath;
+    public String getIconURL() {
+        return iconURL;
     }
 
-    public void setPicPath(String picPath) {
-        this.picPath = picPath;
+    public void setIconURL(String iconURL) {
+        this.iconURL = iconURL;
     }
 
 

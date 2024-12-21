@@ -14,10 +14,9 @@ public interface weatherAPI {
 
 
     @GET("data/2.5/forecast")
-    Call<DailyWeatherResponse> getDailyForecast(
+    Call<HourlyForecastResponse> getDailyForecast(
             @Query("q") String city,
             @Query("appid") String apiKey,
-            @Query("cnt") int days,
             @Query("units") String unit);
 
 

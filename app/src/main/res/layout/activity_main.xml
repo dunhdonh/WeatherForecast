@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ConstraintLayout"
+    android:id="@+id/MainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="47dp"
         android:id="@+id/searchArea"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,10 +24,12 @@
             android:layout_height="wrap_content"
             android:background="@drawable/search_box_background"
             android:completionThreshold="2"
-            android:dropDownWidth="match_parent"
-            
+            android:dropDownWidth="340dp"
+            android:textEditSuggestionItemLayout="@font/gotham"
             android:dropDownHeight="wrap_content"
+
             android:hint="Search Location"
+            android:fontFamily="@font/gotham"
             android:inputType="text"
             android:padding="8dp"
             android:paddingStart="14dp"
@@ -37,6 +39,8 @@
             android:layout_marginEnd="10dp"
             android:textColor="#A0ffffff"
             android:textColorHint="#A0ffffff"
+
+            android:visibility="gone"
             />
 
         <ImageView
@@ -70,42 +74,50 @@
                 android:id="@+id/city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="30dp"
                 android:text="Hanoi"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                tools:ignore="HardcodedText" />
-
-            <ImageView
-                android:id="@+id/weatherIcon"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="10dp"
-                android:src="@drawable/cloudy" />
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Almost Sunny"
+                android:fontFamily="@font/gotham"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="28sp"
                 tools:ignore="HardcodedText" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+
+            <ImageView
+                android:id="@+id/weatherIcon"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/sunny" />
 
             <TextView
                 android:id="@+id/temperature"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="26°C"
+                android:fontFamily="@font/gotham"
+                android:text="26°"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="64sp"
-                android:textStyle="bold"
+                android:textSize="72sp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Almost Sunny"
+                android:fontFamily="@font/gotham"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="24sp"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -114,6 +126,7 @@
                 android:layout_height="wrap_content"
                 android:alpha="0.7"
                 android:text="Feels like 17°C"
+                android:fontFamily="@font/gotham"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
@@ -121,8 +134,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@drawable/background2"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="200dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/card_background"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -144,6 +160,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="22%"
+                        android:fontFamily="@font/gotham"
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="14sp"
@@ -155,6 +172,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Rain"
+                        android:fontFamily="@font/gotham"
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="12sp"
@@ -180,6 +198,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="12 km/h"
+                        android:fontFamily="@font/gotham"
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="14sp"
@@ -192,6 +211,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Wind speed"
+                        android:fontFamily="@font/gotham"
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="12sp"
@@ -210,13 +230,14 @@
                         android:layout_width="34dp"
                         android:layout_height="34dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/humidity" />
+                        android:src="@drawable/humid" />
 
                     <TextView
                         android:id="@+id/humidity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="18%"
+                        android:fontFamily="@font/gotham"
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="14sp"
@@ -228,6 +249,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Humidity"
+                        android:fontFamily="@font/gotham"
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="12sp"
@@ -250,7 +272,8 @@
                     android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="Today"
-                    android:textColor="#DCA900"
+                    android:fontFamily="@font/gotham"
+                    android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     tools:ignore="HardcodedText" />
@@ -260,7 +283,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
-                    android:text="Next 7 Day >"
+                    android:text="Next 5 Day >"
+                    android:fontFamily="@font/gotham"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -268,7 +292,7 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/view1"
+                android:id="@+id/hourlyWeather"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"

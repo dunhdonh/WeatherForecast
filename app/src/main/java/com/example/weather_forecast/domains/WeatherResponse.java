@@ -68,6 +68,13 @@ public class WeatherResponse {
         public String getDescription() {
             return description;
         }
+
+        @SerializedName("icon")
+        private String icon;
+
+        public String getIcon(){
+            return icon;
+        }
     }
 
     public static class Wind {

@@ -37,10 +37,11 @@ public class hourlyAdapters extends RecyclerView.Adapter<hourlyAdapters.viewHold
         holder.hourTxt.setText(items.get(position).getHour());
         holder.tempTxt.setText(items.get(position).getTemp() + "°");
 
-        int drawableResourceId = holder.itemView.getResources()
-                .getIdentifier(items.get(position).getPicPath(), "drawable", holder.itemView.getContext().getPackageName());
-
-        Glide.with(context).load(drawableResourceId).into(holder.pic);
+        Glide.with(context)
+                .load(items.get(position).getIconURL()) // URL của ảnh
+                .placeholder(R.drawable.circulcar_loading) // Ảnh mặc định khi đang tải
+                .error(R.drawable.circulcar_loading) // Ảnh lỗi nếu tải thất bại
+                .into(holder.pic);
     }
 
     @Override
