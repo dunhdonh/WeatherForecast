@@ -2,12 +2,14 @@ package com.example.weather_forecast.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,8 +55,15 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView ivMainIcon, searchIcon;
 
+    ConstraintLayout layout;
+    Drawable drawable;
+
+    float temp;
+
+    HourlyForecastResponse hourlyForecastResponse;
+    //private WeatherViewModel vModel;
     private GeocodingAPI geocodingAPI;
-    private String place = "Ho Chi Minh City";
+    private String place = "Hanoi";
     private ArrayAdapter<String> adapter;
     private List<String> suggestions = new ArrayList<>();
     public static String capitalizeFirstLetter(String input) {
@@ -75,6 +85,9 @@ public class MainActivity extends AppCompatActivity {
 
         searchIcon = findViewById(R.id.search_icon);
         searchAutoCompleteTextView = findViewById(R.id.searchAutoCompleteTextView);
+
+        layout = findViewById(R.id.MainLayout);
+        drawable = layout.getBackground();
 
         searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,12 +119,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String currentText = searchAutoCompleteTextView.getText().toString(); // Lấy trực tiếp nội dung
-                Log.i("Length of s", String.valueOf(currentText.length()));
 
                 if (currentText.length() >= 2) {
                     fetchLocation(currentText, geoAPI); // Gọi API khi có ít nhất 2 ký tự
                     searchAutoCompleteTextView.showDropDown();
-                    Log.d("Alert", "dropdown");
 
                 }
             }
@@ -154,6 +165,25 @@ public class MainActivity extends AppCompatActivity {
         setVariable();
     }
 
+    private void updateBackGround(float temp){
+
+        if (drawable instanceof GradientDrawable) {
+            GradientDrawable gradientDrawable = (GradientDrawable) drawable;
+            String colorStart, colorEnd;
+            if (temp < 5) {colorStart = "#15F5FD"; colorEnd = "#036CDA";}
+            else if (temp < 15) {colorStart = "#036CDA"; colorEnd = "#429421";}
+            else if (temp < 20) {colorStart = "#429421"; colorEnd = "#B3EB50";}
+            else if (temp < 28) {colorStart = "#B3EB50"; colorEnd = "#3425AF";}
+            else if (temp < 30) {colorStart = "#FF57B9"; colorEnd = "#A704FD";}
+            else  {colorStart = "#F36265"; colorEnd = "#961276";}
+
+            gradientDrawable.setColors(new int[] {Color.parseColor(colorStart), Color.parseColor(colorEnd)}); 
+
+            // Nếu cần thay đổi hướng của gradient hoặc các thuộc tính khác
+            gradientDrawable.setOrientation(GradientDrawable.Orientation.TL_BR); // Hướng gradient mới
+        }
+    }
+
     private void callAPI (){
         Call<WeatherResponse> call = WAPI.getWeather(place, "797561c304afd6ef5c33b5dd8dbc42e6", "metric");
         call.enqueue(new Callback<WeatherResponse>() {
@@ -164,7 +194,8 @@ public class MainActivity extends AppCompatActivity {
 
                     // Lấy dữ liệu từ response
                     String cityName = place;
-                    float temp = weatherResponse.getMain().getTemp();
+                    temp = weatherResponse.getMain().getTemp();
+
                     String icon = weatherResponse.getWeather().get(0).getIcon();
                     String iconURL = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
 
@@ -176,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     float rainPercentage = weatherResponse.getRainPercentage() * 100;
 
                     // Cập nhật giao diện
-
+                    updateBackGround(temp);
                     Glide.with(MainActivity.this)
                             .load(iconURL)
                             .into(ivMainIcon);
@@ -187,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     tvHumidity.setText(humidity + "%");
                     tvDescription.setText(description);
                     tvWindSpeed.setText(Math.round(wind) + " km/h");
-                    tvRainPercentage.setText(Math.round(rainPercentage) + " %");
+                    tvRainPercentage.setText(Math.round(rainPercentage) + "%");
                 } else {
                     tvCity.setText("Failed to load data");
                 }
@@ -236,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
         TextView nextBtn = findViewById(R.id.nextBtn);
         nextBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, FutureActivity.class);
+            intent.putExtra("place", place);
             startActivity(intent);  // Chuyển sang FutureActivity
         });
 
@@ -259,8 +291,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<HourlyForecastResponse> call, Response<HourlyForecastResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    HourlyForecastResponse hourlyForecastResponse = response.body();
-
+                    hourlyForecastResponse = response.body();
+                    //vModel.updateWeatherData(hourlyForecastResponse);
                     for (int i = 0; i <= 10; i++) {
                         // Lấy dữ liệu từ response
                         long dt = hourlyForecastResponse.getWeatherData().get(i).getDt();
@@ -270,7 +302,6 @@ public class MainActivity extends AppCompatActivity {
                         float temp = hourlyForecastResponse.getWeatherData().get(i).getMain().getTemp();
                         String icon = hourlyForecastResponse.getWeatherData().get(i).getWeather().get(0).getIcon();
                         String iconURL = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
-                        Log.i("iconURL", iconURL);
 
                         // Cập nhật giao diện
 
