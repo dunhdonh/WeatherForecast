@@ -2,17 +2,18 @@ package com.example.weather_forecast.domains;
 
 public class future {
     private String day;
+    private String dayMonth;
     private String picPath;
     private String status;
-    private int highTemp;
-    private int lowTemp;
+    private int temp;
 
-    public future(String day, String picPath, String status, int highTemp, int lowTemp) {
+
+    public future(String day, String dayMonth, String picPath, String status, int temp) {
         this.day = day;
+        this.dayMonth = dayMonth;
         this.picPath = picPath;
         this.status = status;
-        this.highTemp = highTemp;
-        this.lowTemp = lowTemp;
+        this.temp = temp;
     }
 
     public String getDay() {
@@ -39,19 +40,19 @@ public class future {
         this.status = status;
     }
 
-    public int getHighTemp() {
-        return highTemp;
+    public int getTemp() {
+        return temp;
     }
 
-    public void setHighTemp(int highTemp) {
-        this.highTemp = highTemp;
+    public void setTemp(int temp) {
+        this.temp = temp;
     }
 
-    public int getLowTemp() {
-        return lowTemp;
+    public String getDayMonth() {
+        return dayMonth;
     }
 
-    public void setLowTemp(int lowTemp) {
-        this.lowTemp = lowTemp;
+    public void setDayMonth(String dayMonth) {
+        this.dayMonth = dayMonth;
     }
 }

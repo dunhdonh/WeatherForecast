@@ -46,6 +46,11 @@ public class HourlyForecastResponse {
             @SerializedName("temp")
             private float temp;
 
+            @SerializedName("temp_min")
+            private float lowTemp;
+
+            @SerializedName("temp_max")
+            private float highTemp;
             @SerializedName("humidity")
             private int humidity;
 
@@ -54,6 +59,14 @@ public class HourlyForecastResponse {
 
             public float getTemp() {
                 return temp;
+            }
+
+            public float getLowTemp() {
+                return lowTemp;
+            }
+
+            public float getHighTemp() {
+                return highTemp;
             }
 
             public int getHumidity() {

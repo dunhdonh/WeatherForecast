@@ -2,6 +2,8 @@ package com.example.weather_forecast.domains;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 public class WeatherResponse {
+    @SerializedName("dt")
+    private long dt;
     @SerializedName("main")
     private Main main;
 
@@ -15,6 +17,9 @@ public class WeatherResponse {
         return wind;
     }
 
+    public long getDt(){
+        return dt;
+    }
     public Main getMain() {
         return main;
     }

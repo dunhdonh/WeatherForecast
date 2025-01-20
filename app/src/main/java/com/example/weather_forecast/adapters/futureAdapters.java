@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +25,8 @@ public class futureAdapters extends RecyclerView.Adapter<futureAdapters.viewHold
         this.items = items;
     }
 
+
+
     @NonNull
     @Override
     public futureAdapters.viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,13 +37,15 @@ public class futureAdapters extends RecyclerView.Adapter<futureAdapters.viewHold
     @Override
     public void onBindViewHolder(@NonNull futureAdapters.viewHolder holder, int position) {
         holder.dayTxt.setText(items.get(position).getDay());
+        holder.dayMonthTxt.setText(items.get(position).getDayMonth());
         holder.statusTxt.setText(items.get(position).getStatus());
-        holder.lowTxt.setText(items.get(position).getLowTemp()+"°C");
-        holder.highTxt.setText(items.get(position).getHighTemp()+"°C");
-        int drawableResourceId = holder.itemView.getResources()
-                .getIdentifier(items.get(position).getPicPath(), "drawable", holder.itemView.getContext().getPackageName());
+        holder.tempTxt.setText(items.get(position).getTemp()+"°C");
 
-        Glide.with(context).load(drawableResourceId).into(holder.pic);
+        Glide.with(context)
+                .load(items.get(position).getPicPath()) // URL của ảnh
+                .placeholder(R.drawable.circulcar_loading) // Ảnh mặc định khi đang tải
+                .error(R.drawable.circulcar_loading) // Ảnh lỗi nếu tải thất bại
+                .into(holder.pic);
     }
 
     @Override
@@ -49,15 +54,15 @@ public class futureAdapters extends RecyclerView.Adapter<futureAdapters.viewHold
     }
 
     public class viewHolder extends RecyclerView.ViewHolder{
-        TextView dayTxt, statusTxt, lowTxt, highTxt;
+        TextView dayTxt, dayMonthTxt, statusTxt, tempTxt;
         ImageView pic;
         public viewHolder(@NonNull View itemView) {
             super(itemView);
 
-            dayTxt = itemView.findViewById(R.id.dayTxt);
+            dayTxt = itemView.findViewById(R.id.dayWeekTxt);
+            dayMonthTxt = itemView.findViewById(R.id.dayMonthTxt);
             statusTxt = itemView.findViewById(R.id.statusTxt);
-            lowTxt = itemView.findViewById(R.id.lowTxt);
-            highTxt = itemView.findViewById(R.id.highTxt);
+            tempTxt = itemView.findViewById(R.id.tempTxt);
             pic = itemView.findViewById(R.id.pic);
         }
     }

@@ -9,15 +9,64 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/recentCityMain"
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:elevation="12dp">
+
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recentCity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="35dp"
+            android:background="@color/white"
+            android:nestedScrollingEnabled="true"
+            />
+        <TextView
+            android:id="@+id/recentTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recent Location"
+            android:textSize="18sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gotham"
+            android:textStyle="bold"
+            android:padding="10dp"
+            />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:elevation="20dp"
         android:layout_width="match_parent"
         android:layout_height="47dp"
         android:id="@+id/searchArea"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
-
         >
+
+        <ImageView
+            android:id="@+id/menu_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="17dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/baseline_menu_24"
+            android:alpha="0.5"/>
+
         <AutoCompleteTextView
             android:id="@+id/searchAutoCompleteTextView"
             android:layout_width="match_parent"
@@ -35,7 +84,7 @@
             android:paddingStart="14dp"
             android:textSize="16sp"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="50dp"
             android:layout_marginEnd="10dp"
             android:textColor="#A0ffffff"
             android:textColorHint="#A0ffffff"
@@ -132,19 +181,43 @@
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/DateTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
                 android:layout_marginStart="35dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginEnd="35dp"
+                >
 
-                android:alpha="0.7"
-                android:text="Sat 28 Dec"
-                android:fontFamily="@font/gotham"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/Date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:alpha="0.7"
+                    android:fontFamily="@font/gotham"
+                    android:text="Sat 28 Dec, 2025"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textAlignment="textStart" />
+
+                <TextView
+                    android:id="@+id/Time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_weight="1"
+                    android:alpha="0.7"
+                    android:fontFamily="@font/gotham"
+                    android:text="15 : 40"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textAlignment="textEnd" />
+
+            </LinearLayout>
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -296,7 +369,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
-                    android:text="Next 5 Days >"
+                    android:text="Next 6 Days >"
                     android:fontFamily="@font/gotham"
                     android:textColor="@color/white"
                     android:textSize="14sp"
@@ -311,8 +384,20 @@
                 android:clipToPadding="false"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp" />
+
         </LinearLayout>
+
+
+
     </ScrollView>
+
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:elevation="10dp"
+        android:visibility="gone" />
 
 
 

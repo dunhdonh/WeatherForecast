@@ -1,7 +1,9 @@
 package com.example.weather_forecast.activities;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,12 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.weather_forecast.R;
 import com.example.weather_forecast.adapters.futureAdapters;
+import com.example.weather_forecast.domains.DatabaseHelper;
+import com.example.weather_forecast.domains.DateTimeUtil;
 import com.example.weather_forecast.domains.HourlyForecastResponse;
-import com.example.weather_forecast.domains.JsonFileReader;
 import com.example.weather_forecast.domains.RetrofitClient;
 import com.example.weather_forecast.domains.future;
 import com.example.weather_forecast.domains.weatherAPI;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -28,11 +32,13 @@ import retrofit2.Response;
 public class FutureActivity extends AppCompatActivity {
     Intent intent;
     String place;
-
     private RecyclerView.Adapter adapterTomorrow;
     public RecyclerView recyclerView;
 
     HourlyForecastResponse hourlyForecastResponse;
+
+    DatabaseHelper databaseHelper;
+    SQLiteDatabase db;
 
     weatherAPI WAPI = RetrofitClient.getClient().create(weatherAPI.class);
     ImageView ivTomorrow;
@@ -50,6 +56,9 @@ public class FutureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_future);
 
+        databaseHelper = new DatabaseHelper(this);
+        db = databaseHelper.getWritableDatabase();
+
         intent = getIntent();
         place = intent.getStringExtra("place");
 
@@ -60,7 +69,6 @@ public class FutureActivity extends AppCompatActivity {
         tvTomorrowWind = findViewById(R.id.tomorrowWind);
         tvTomorrowHumidity = findViewById(R.id.tomorrowHumid);
         callAPI();
-        initRecyclerView();
         setVariable();
     }
 
@@ -92,6 +100,8 @@ public class FutureActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     hourlyForecastResponse = response.body();
                     updatePanels();
+                    initRecyclerView();
+
                 }
             }
 
@@ -111,13 +121,29 @@ public class FutureActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         ArrayList<future> items = new ArrayList<>();
-        items.add(new future("Mon", "sunny","Sunny",30, 25));
-        items.add(new future("Tue", "windy","Windy",25, 20));
-        items.add(new future("Wed", "rainy","Rainy",24, 19));
-        items.add(new future("Thu", "cloudy","Cloudy",26, 21));
-        items.add(new future("Fri", "snowy","Snowy",18, 10));
-        items.add(new future("Sat", "storm","Storm",20, 15));
-        items.add(new future("Sun", "cloudy_sunny","Mostly Cloudy",28, 23));
+        String day, dayMonth, description, picPath;
+        float temp;
+        long dt;
+        for (int i = 6; i<39;i = i+7 )
+        {
+            Log.i("get i", "so "+i);
+            dt = hourlyForecastResponse.getWeatherData().get(i).getDt();
+            LocalDateTime dateTime = DateTimeUtil.getLocalDateTimeFromTimestamp(dt);
+            day = DateTimeUtil.getDayOfWeek(dt);
+            dayMonth = DateTimeUtil.getDayMonth(dt);
+
+            description = hourlyForecastResponse.getWeatherData().get(i).getWeather().get(0).getDescription();
+            description = capitalizeFirstLetter(description);
+
+            String img = hourlyForecastResponse.getWeatherData().get(i).getWeather().get(0).getIcon();
+            picPath = "https://openweathermap.org/img/wn/" + img + "@2x.png";
+
+            temp = hourlyForecastResponse.getWeatherData().get(i).getMain().getTemp();
+
+            items.add(new future(day, dayMonth, picPath, description,Math.round(temp)));
+        }
+
+
 
         recyclerView = findViewById(R.id.view2);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));

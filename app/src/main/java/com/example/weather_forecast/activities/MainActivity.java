@@ -1,7 +1,10 @@
 package com.example.weather_forecast.activities;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -15,9 +18,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,12 +31,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.weather_forecast.R;
 import com.example.weather_forecast.adapters.hourlyAdapters;
+import com.example.weather_forecast.adapters.placeAdapters;
+import com.example.weather_forecast.domains.DatabaseHelper;
 import com.example.weather_forecast.domains.DateTimeUtil;
 import com.example.weather_forecast.domains.GeocodingAPI;
 import com.example.weather_forecast.domains.HourlyForecastResponse;
 import com.example.weather_forecast.domains.RetrofitClient;
 import com.example.weather_forecast.domains.WeatherResponse;
 import com.example.weather_forecast.domains.hourly;
+import com.example.weather_forecast.domains.savedPlace;
 import com.example.weather_forecast.domains.weatherAPI;
 import com.example.weather_forecast.domains.geoLocation;
 
@@ -47,12 +55,18 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapterHourly;
+
+    private placeAdapters adapterPlace;
     private RecyclerView recyclerView;
+    private RelativeLayout recentlyMain;
     //search bar
     private AutoCompleteTextView searchAutoCompleteTextView;
 
+    private ImageView menu_bar;
+    private RecyclerView recentCity;
+    private View overlay;
     private TextView tvCity, tvTemperature, tvHumidity, tvDescription, tvWindSpeed, tvRainPercentage, tvFeelsLike;
-
+    private TextView tvDate, tvTime;
     private ImageView ivMainIcon, searchIcon;
 
     ConstraintLayout layout;
@@ -66,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
     private String place = "Hanoi";
     private ArrayAdapter<String> adapter;
     private List<String> suggestions = new ArrayList<>();
+
+    DatabaseHelper databaseHelper;
+    SQLiteDatabase db;
     public static String capitalizeFirstLetter(String input) {
         if (input == null || input.isEmpty()) {
             return input;
@@ -86,15 +103,47 @@ public class MainActivity extends AppCompatActivity {
         searchIcon = findViewById(R.id.search_icon);
         searchAutoCompleteTextView = findViewById(R.id.searchAutoCompleteTextView);
 
+        menu_bar = findViewById(R.id.menu_icon);
+        recentCity = findViewById(R.id.recentCity);
+        recentlyMain = findViewById(R.id.recentCityMain);
+        overlay = findViewById(R.id.overlay);
+
+        databaseHelper = new DatabaseHelper(this);
+        db = databaseHelper.getWritableDatabase();
+
         layout = findViewById(R.id.MainLayout);
         drawable = layout.getBackground();
 
+        overlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchAutoCompleteTextView.setVisibility(View.GONE); // Hiện AutoCompleteTextView
+                recentlyMain.setVisibility(View.GONE);
+                overlay.setVisibility(View.GONE);
+            }
+        });
         searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (searchAutoCompleteTextView.getVisibility() == View.GONE) {
-                    searchAutoCompleteTextView.setVisibility(View.VISIBLE); // Hiện AutoCompleteTextView
-                }
+
+                searchAutoCompleteTextView.setVisibility(View.VISIBLE);
+                recentlyMain.setVisibility(View.GONE);
+                overlay.setVisibility(View.VISIBLE);
+                searchAutoCompleteTextView.bringToFront();
+
+
+            }
+        });
+
+        menu_bar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recentlyMain.setVisibility(View.VISIBLE);
+                searchAutoCompleteTextView.setVisibility(View.GONE);
+                overlay.setVisibility(View.VISIBLE);
+                recentlyMain.bringToFront();
+                initRecentPlace();
+
             }
         });
         // Adapter để hiển thị danh sách gợi ý
@@ -138,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Lưu giá trị địa điểm đã chọn
+                overlay.setVisibility(View.GONE);
                 place = parentView.getItemAtPosition(position).toString();
                 searchAutoCompleteTextView.setText("");
                 // Tắt dropdown (thực tế, AutoCompleteTextView sẽ tự động đóng dropdown khi người dùng chọn item)
@@ -157,6 +207,8 @@ public class MainActivity extends AppCompatActivity {
         tvWindSpeed = findViewById(R.id.windspeed);
         tvRainPercentage = findViewById(R.id.rainpercentage);
         ivMainIcon = findViewById(R.id.weatherIcon);
+        tvDate = findViewById(R.id.Date);
+        tvTime = findViewById(R.id.Time);
 
         callAPI();
 
@@ -170,14 +222,13 @@ public class MainActivity extends AppCompatActivity {
         if (drawable instanceof GradientDrawable) {
             GradientDrawable gradientDrawable = (GradientDrawable) drawable;
             String colorStart, colorEnd;
-            if (temp < 5) {colorStart = "#15F5FD"; colorEnd = "#036CDA";}
-            else if (temp < 15) {colorStart = "#036CDA"; colorEnd = "#429421";}
-            else if (temp < 20) {colorStart = "#429421"; colorEnd = "#B3EB50";}
-            else if (temp < 28) {colorStart = "#B3EB50"; colorEnd = "#3425AF";}
-            else if (temp < 30) {colorStart = "#FF57B9"; colorEnd = "#A704FD";}
-            else  {colorStart = "#F36265"; colorEnd = "#961276";}
+            if (temp < 0) {colorStart = "#1A237E"; colorEnd = "#0D47A1";}
+            else if (temp < 10) {colorStart = "#0D47A1"; colorEnd = "#1565C0";}
+            else if (temp < 20) {colorStart = "#2565C0"; colorEnd = "#388E3C";}
+            else if (temp < 30) {colorStart = "#388E3C"; colorEnd = "#7F9800";}
+            else {colorStart = "#BF9800"; colorEnd = "#D71C1C";}
 
-            gradientDrawable.setColors(new int[] {Color.parseColor(colorStart), Color.parseColor(colorEnd)}); 
+            gradientDrawable.setColors(new int[] {Color.parseColor(colorStart), Color.parseColor(colorEnd)});
 
             // Nếu cần thay đổi hướng của gradient hoặc các thuộc tính khác
             gradientDrawable.setOrientation(GradientDrawable.Orientation.TL_BR); // Hướng gradient mới
@@ -196,6 +247,11 @@ public class MainActivity extends AppCompatActivity {
                     String cityName = place;
                     temp = weatherResponse.getMain().getTemp();
 
+                    long dt = weatherResponse.getDt();
+                    LocalDateTime dateTime = DateTimeUtil.getLocalDateTimeFromTimestamp(dt);
+                    String hour = DateTimeUtil.getTimeFromTimestamp(dt);
+                    String date = DateTimeUtil.getDateFromTimestamp(dt);
+
                     String icon = weatherResponse.getWeather().get(0).getIcon();
                     String iconURL = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
 
@@ -206,7 +262,9 @@ public class MainActivity extends AppCompatActivity {
                     float wind = weatherResponse.getWind().getSpeed();
                     float rainPercentage = weatherResponse.getRainPercentage() * 100;
 
-                    // Cập nhật giao diện
+                    addOrUpdateCity(place, temp, iconURL);
+
+                    // update ui
                     updateBackGround(temp);
                     Glide.with(MainActivity.this)
                             .load(iconURL)
@@ -219,8 +277,10 @@ public class MainActivity extends AppCompatActivity {
                     tvDescription.setText(description);
                     tvWindSpeed.setText(Math.round(wind) + " km/h");
                     tvRainPercentage.setText(Math.round(rainPercentage) + "%");
+                    tvDate.setText(date);
+                    tvTime.setText(hour);
                 } else {
-                    tvCity.setText("Failed to load data");
+                    Toast.makeText(MainActivity.this, "Failed to load data, try again!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -295,10 +355,11 @@ public class MainActivity extends AppCompatActivity {
                     //vModel.updateWeatherData(hourlyForecastResponse);
                     for (int i = 0; i <= 10; i++) {
                         // Lấy dữ liệu từ response
+
                         long dt = hourlyForecastResponse.getWeatherData().get(i).getDt();
                         LocalDateTime dateTime = DateTimeUtil.getLocalDateTimeFromTimestamp(dt);
-                        String datetime = dateTime.toString();
                         String hour = DateTimeUtil.getTimeFromTimestamp(dt);
+
                         float temp = hourlyForecastResponse.getWeatherData().get(i).getMain().getTemp();
                         String icon = hourlyForecastResponse.getWeatherData().get(i).getWeather().get(0).getIcon();
                         String iconURL = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
@@ -329,11 +390,73 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void initRecentPlace() {
+        ArrayList<savedPlace> items = new ArrayList<>();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM location", null);
+
+        for (String columnName : cursor.getColumnNames()) {
+            Log.d("ColumnName", columnName);
+        }
+
+        if (cursor.moveToFirst()) {
+            do {
+                String place = cursor.getString(cursor.getColumnIndexOrThrow("city"));
+                String icon = cursor.getString(cursor.getColumnIndexOrThrow("icon"));
+                float temp = cursor.getFloat(cursor.getColumnIndexOrThrow("temperature"));
+                items.add(new savedPlace(place, Math.round(temp), icon));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        recyclerView = findViewById(R.id.recentCity);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+
+        adapterPlace = new placeAdapters(items);
+        recyclerView.setAdapter(adapterPlace);
+
+        adapterPlace.setOnItemClickListener(position -> {
+            // Lấy item được click
+            savedPlace selectedPlace = items.get(position);
+
+            place = selectedPlace.getPlace();
+            callAPI();
+            recentlyMain.setVisibility(View.GONE);
+            overlay.setVisibility(View.GONE);
+        });
+
+    }
+
+
+
+
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null && getCurrentFocus() != null) {
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
+    }
+
+    private void addOrUpdateCity(String city, float temp, String iconURL){
+        Cursor cs = db.query("location", new String[]{"id", "city", "temperature", "icon"},
+                "city=?", new String[]{city}, null, null, null);
+
+        ContentValues value = new ContentValues();
+        value.put("city", city);
+        value.put("temperature", temp);
+        value.put("icon", iconURL);
+
+        if (cs!= null && cs.getCount()>0){
+            cs.moveToFirst();
+            int cityID = cs.getInt(cs.getColumnIndexOrThrow("id"));
+            db.update("location", value, "id=?", new String[]{String.valueOf(cityID)});
+            Log.i("city update: ", city);
+        }
+        else {
+            db.insert("location", null, value);
+            Log.i("city add: ", city);
+        }
+        cs.close();
     }
 }
 
